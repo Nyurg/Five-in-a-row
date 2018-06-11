@@ -2,19 +2,15 @@ package sample;
 
 import javafx.scene.layout.GridPane;
 
-import java.io.*;
-import java.util.Scanner;
-
 public class Board extends GridPane implements java.io.Serializable {
     //attributes
     private Cell[][] boardSize;
     private Player playerTurn;
-    private int turnNumber = 0;
-    private int bestOf;
+    private int turnNumber = 1;
 
     //constructors
     public Board() { }
-    public Board(Cell[][] boardSize, Player playerTurn, int bestOf) {
+    public Board(Cell[][] boardSize, Player playerTurn) {
         this.boardSize = boardSize;
         this.playerTurn = playerTurn;
     }
@@ -47,12 +43,12 @@ public class Board extends GridPane implements java.io.Serializable {
         int count = 0;
         //vertical determination
         for (int a = 0; a < 5; a++) {
-            if (yPos + a < boardSize.length && boardSize[yPos + a][xPos].hasPiece() && playerTurn.getPieceColour() == boardSize[yPos + a][xPos].getPiece().getColor()) {
+            if (yPos + a < boardSize.length && boardSize[yPos + a][xPos].hasPlayerClaimed() && playerTurn.getImage() == boardSize[yPos + a][xPos].getPlayerlaimed().getImage()) {
                 count++;
             } else {
                 a = 5;
                 for (int b = 1; b < 5; b++) {
-                    if (yPos - b >= 0 && boardSize[yPos - b][xPos].hasPiece() && playerTurn.getPieceColour() == boardSize[yPos - b][xPos].getPiece().getColor()) {
+                    if (yPos - b >= 0 && boardSize[yPos - b][xPos].hasPlayerClaimed() && playerTurn.getImage() == boardSize[yPos - b][xPos].getPlayerlaimed().getImage()) {
                         count++;
                     } else {
                         b = 5;
@@ -69,12 +65,12 @@ public class Board extends GridPane implements java.io.Serializable {
         //horizontal determination
         count = 0;
         for (int a = 0; a < 5; a++) {
-            if (xPos + a < boardSize[yPos].length && boardSize[yPos][xPos + a].hasPiece() && playerTurn.getPieceColour() == boardSize[yPos][xPos + a].getPiece().getColor()) {
+            if (xPos + a < boardSize[yPos].length && boardSize[yPos][xPos + a].hasPlayerClaimed() && playerTurn.getImage() == boardSize[yPos][xPos + a].getPlayerlaimed().getImage()) {
                 count++;
             } else {
                 a = 5;
                 for (int b = 1; b < 5; b++) {
-                    if (xPos - b >= 0 && boardSize[yPos][xPos - b].hasPiece() && playerTurn.getPieceColour() == boardSize[yPos][xPos - b].getPiece().getColor()) {
+                    if (xPos - b >= 0 && boardSize[yPos][xPos - b].hasPlayerClaimed() && playerTurn.getImage() == boardSize[yPos][xPos - b].getPlayerlaimed().getImage()) {
                         count++;
                     } else {
                         b = 5;
@@ -90,12 +86,12 @@ public class Board extends GridPane implements java.io.Serializable {
         //negative diagonal determination
         count = 0;
         for (int a = 0; a < 5; a++) {
-            if (xPos + a < boardSize[yPos].length && yPos + a < boardSize.length && boardSize[yPos + a][xPos + a].hasPiece() && playerTurn.getPieceColour() == boardSize[yPos + a][xPos + a].getPiece().getColor()) {
+            if (xPos + a < boardSize[yPos].length && yPos + a < boardSize.length && boardSize[yPos + a][xPos + a].hasPlayerClaimed() && playerTurn.getImage() == boardSize[yPos + a][xPos + a].getPlayerlaimed().getImage()) {
                 count++;
             } else {
                 a = 5;
                 for (int b = 1; b < 5; b++) {
-                    if (xPos - b >= 0 && yPos - b > 0 && boardSize[yPos - b][xPos - b].hasPiece() && playerTurn.getPieceColour() == boardSize[yPos - b][xPos - b].getPiece().getColor()) {
+                    if (xPos - b >= 0 && yPos - b > 0 && boardSize[yPos - b][xPos - b].hasPlayerClaimed() && playerTurn.getImage() == boardSize[yPos - b][xPos - b].getPlayerlaimed().getImage()) {
                         count++;
                     } else {
                         b = 5;
@@ -111,12 +107,12 @@ public class Board extends GridPane implements java.io.Serializable {
         //positive diagonal determination
         count = 0;
         for (int a = 0; a < 5; a++) {
-            if (xPos + a < boardSize[yPos].length && yPos - a > 0 && boardSize[yPos - a][xPos + a].hasPiece() && playerTurn.getPieceColour() == boardSize[yPos - a][xPos + a].getPiece().getColor()) {
+            if (xPos + a < boardSize[yPos].length && yPos - a > 0 && boardSize[yPos - a][xPos + a].hasPlayerClaimed() && playerTurn.getImage() == boardSize[yPos - a][xPos + a].getPlayerlaimed().getImage()) {
                 count++;
             } else {
                 a = 5;
                 for (int b = 1; b < 5; b++) {
-                    if (xPos - b >= 0 && yPos + b < boardSize.length && boardSize[yPos + b][xPos - b].hasPiece() && playerTurn.getPieceColour() == boardSize[yPos + b][xPos - b].getPiece().getColor()) {
+                    if (xPos - b >= 0 && yPos + b < boardSize.length && boardSize[yPos + b][xPos - b].hasPlayerClaimed() && playerTurn.getImage() == boardSize[yPos + b][xPos - b].getPlayerlaimed().getImage()) {
                         count++;
                     } else {
                         b = 5;
@@ -130,29 +126,5 @@ public class Board extends GridPane implements java.io.Serializable {
         }
 
         return false;
-    }
-
-
-    private final static String FILE_PATH = System.getProperty("user.dir") + "\\progress.dat";
-
-    public void saveProgress() {
-        try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
-            output.writeObject(this);
-            output.close();
-        } catch (IOException ioe) {
-            System.out.println("IOException in file writing: " + ioe.getMessage() + "\nFile writing will now stop.");
-        }
-    }
-
-    public void loadProgress() {
-        try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(FILE_PATH))) {
-            Board board = (Board) input.readObject();
-            input.close();
-            boardSize = board.boardSize;
-            playerTurn = board.playerTurn;
-            bestOf = board.bestOf;
-        } catch (Exception e) {
-            System.out.println("IOException in file reading: " + e.getMessage() + "\nFile reading will now stop.");
-        }
     }
 }

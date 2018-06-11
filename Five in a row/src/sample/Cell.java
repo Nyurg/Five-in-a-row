@@ -1,12 +1,11 @@
 package sample;
 
-import javafx.geometry.Insets;
 import javafx.scene.layout.Pane;
 
 public class Cell extends Pane implements java.io.Serializable {
     //attributes
     private int cellLength;
-    private Piece piece;
+    private Player playerClaimed;
 
     //constructors
     public Cell() { }
@@ -19,16 +18,16 @@ public class Cell extends Pane implements java.io.Serializable {
         return cellLength;
     }
 
-    public boolean hasPiece() {
-        return piece != null;
+    public boolean hasPlayerClaimed() {
+        return playerClaimed != null;
     }
 
-    public Piece getPiece() {
-        return piece;
+    public Player getPlayerlaimed() {
+        return playerClaimed;
     }
 
     //setters
-    public void setPiece(Piece setPiece) {
-        piece = setPiece;
+    public void setPlayerClaimed(Player playerClaimed) {
+        this.playerClaimed = playerClaimed;
     }
 }

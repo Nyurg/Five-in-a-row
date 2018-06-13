@@ -41,14 +41,14 @@ public class Board extends GridPane implements java.io.Serializable {
 
     public boolean determineFiveInRow(int xPos, int yPos) {
         int count = 0;
-        //vertical determination
+        // vertical determination
         for (int a = 0; a < 5; a++) {
-            if (yPos + a < boardSize.length && boardSize[yPos + a][xPos].hasPlayerClaimed() && playerTurn.getImage() == boardSize[yPos + a][xPos].getPlayerlaimed().getImage()) {
+            if (yPos + a < boardSize.length && boardSize[yPos + a][xPos].hasPlayerClaimed() && playerTurn == boardSize[yPos + a][xPos].getPlayerlaimed()) {
                 count++;
             } else {
                 a = 5;
                 for (int b = 1; b < 5; b++) {
-                    if (yPos - b >= 0 && boardSize[yPos - b][xPos].hasPlayerClaimed() && playerTurn.getImage() == boardSize[yPos - b][xPos].getPlayerlaimed().getImage()) {
+                    if (yPos - b >= 0 && boardSize[yPos - b][xPos].hasPlayerClaimed() && playerTurn == boardSize[yPos - b][xPos].getPlayerlaimed()) {
                         count++;
                     } else {
                         b = 5;
@@ -62,15 +62,15 @@ public class Board extends GridPane implements java.io.Serializable {
             return true;
         }
 
-        //horizontal determination
+        // horizontal determination
         count = 0;
         for (int a = 0; a < 5; a++) {
-            if (xPos + a < boardSize[yPos].length && boardSize[yPos][xPos + a].hasPlayerClaimed() && playerTurn.getImage() == boardSize[yPos][xPos + a].getPlayerlaimed().getImage()) {
+            if (xPos + a < boardSize[yPos].length && boardSize[yPos][xPos + a].hasPlayerClaimed() && playerTurn == boardSize[yPos][xPos + a].getPlayerlaimed()) {
                 count++;
             } else {
                 a = 5;
                 for (int b = 1; b < 5; b++) {
-                    if (xPos - b >= 0 && boardSize[yPos][xPos - b].hasPlayerClaimed() && playerTurn.getImage() == boardSize[yPos][xPos - b].getPlayerlaimed().getImage()) {
+                    if (xPos - b >= 0 && boardSize[yPos][xPos - b].hasPlayerClaimed() && playerTurn == boardSize[yPos][xPos - b].getPlayerlaimed()) {
                         count++;
                     } else {
                         b = 5;
@@ -83,15 +83,15 @@ public class Board extends GridPane implements java.io.Serializable {
             return true;
         }
 
-        //negative diagonal determination
+        // negative diagonal determination
         count = 0;
         for (int a = 0; a < 5; a++) {
-            if (xPos + a < boardSize[yPos].length && yPos + a < boardSize.length && boardSize[yPos + a][xPos + a].hasPlayerClaimed() && playerTurn.getImage() == boardSize[yPos + a][xPos + a].getPlayerlaimed().getImage()) {
+            if (xPos + a < boardSize[yPos].length && yPos + a < boardSize.length && boardSize[yPos + a][xPos + a].hasPlayerClaimed() && playerTurn == boardSize[yPos + a][xPos + a].getPlayerlaimed()) {
                 count++;
             } else {
                 a = 5;
                 for (int b = 1; b < 5; b++) {
-                    if (xPos - b >= 0 && yPos - b > 0 && boardSize[yPos - b][xPos - b].hasPlayerClaimed() && playerTurn.getImage() == boardSize[yPos - b][xPos - b].getPlayerlaimed().getImage()) {
+                    if (xPos - b >= 0 && yPos - b > 0 && boardSize[yPos - b][xPos - b].hasPlayerClaimed() && playerTurn == boardSize[yPos - b][xPos - b].getPlayerlaimed()) {
                         count++;
                     } else {
                         b = 5;
@@ -104,15 +104,15 @@ public class Board extends GridPane implements java.io.Serializable {
             return true;
         }
 
-        //positive diagonal determination
+        // positive diagonal determination
         count = 0;
         for (int a = 0; a < 5; a++) {
-            if (xPos + a < boardSize[yPos].length && yPos - a > 0 && boardSize[yPos - a][xPos + a].hasPlayerClaimed() && playerTurn.getImage() == boardSize[yPos - a][xPos + a].getPlayerlaimed().getImage()) {
+            if (xPos + a < boardSize[yPos].length && yPos - a > 0 && boardSize[yPos - a][xPos + a].hasPlayerClaimed() && playerTurn == boardSize[yPos - a][xPos + a].getPlayerlaimed()) {
                 count++;
             } else {
                 a = 5;
                 for (int b = 1; b < 5; b++) {
-                    if (xPos - b >= 0 && yPos + b < boardSize.length && boardSize[yPos + b][xPos - b].hasPlayerClaimed() && playerTurn.getImage() == boardSize[yPos + b][xPos - b].getPlayerlaimed().getImage()) {
+                    if (xPos - b >= 0 && yPos + b < boardSize.length && boardSize[yPos + b][xPos - b].hasPlayerClaimed() && playerTurn == boardSize[yPos + b][xPos - b].getPlayerlaimed()) {
                         count++;
                     } else {
                         b = 5;

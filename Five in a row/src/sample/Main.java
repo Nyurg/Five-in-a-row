@@ -18,7 +18,8 @@ public class Main extends Application {
     private Board board = new Board(new Cell[SIZE + 1][SIZE], player1);
     private final static String FILE_PATH = System.getProperty("user.dir") + "\\progress.dat";
 
-    GridPane layout;
+    private Stage stage;
+    private GridPane layout = new GridPane();
     private Label turnPlayer = new Label();
     private Label turnNumber = new Label();
     private Button saveButton = new Button();
@@ -26,46 +27,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage window) throws Exception {
-        window.setTitle("5 in a Row");
+        stage = window;
+        stage.setTitle("5 in a Row");
 
-        // cells are generated
-        for (int x = 0; x < board.getBoardSize().length; x++) {
-            for (int y = 0; y < board.getBoardSize()[x].length; y++) {
-                Cell cell = board.getBoardSize()[x][y] = new Cell(20);
-
-                // top line is ignored due to weird bugs
-                if (x > 0) {
-                    cell.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-                    final int fx = x, fy = y;
-
-                    // mouse click event handler on click of the generated cell
-                    cell.setOnMouseClicked(e -> {
-                        Cell cellClicked = board.getBoardSize()[fx][fy];
-
-                        // if a cell hasn't got a piece...
-                        if (!cellClicked.hasPlayerClaimed()) {
-
-                            // set it one, based on current player turn
-                            cellClicked.setPlayerClaimed(board.getPlayerTurn());
-                            cellClicked.setStyle("-fx-background-image: url('" + board.getPlayerTurn().getImage() + "');");
-
-                            // update the next player and turn number labels
-                            turnPlayer.setText("Next Move: " + (board.getPlayerTurn() == player1 ? "Dr. Mantis Toboggan" : "The Trash Man"));
-                            board.setTurnNumber(board.getTurnNumber() + 1);
-                            turnNumber.setText("Turn Number: " + board.getTurnNumber());
-
-                            // five-in-a-row is determined
-                            board.determineFiveInRow(fy, fx);
-                            board.setPlayerTurn(board.getPlayerTurn() == player1 ? player2 : player1);
-                        }
-                    });
-
-                    // the cell is added to the board
-                    board.add(cell, y, x);
-                    cell.setPadding(new Insets(cell.getCellLength(), cell.getCellLength(), cell.getCellLength(), cell.getCellLength()));
-                }
-            }
-        }
+        createBoard();
 
         // save button properties
         saveButton.setText("Save current progress.");
@@ -94,18 +59,13 @@ public class Main extends Application {
         turnNumber.setTranslateY(350);
         turnNumber.setMinWidth(Region.USE_PREF_SIZE);
 
-        // the layout for the stage
-        layout = new GridPane();
-        layout.getChildren().addAll(board, saveButton, loadButton, turnNumber, turnPlayer);
-        layout.setPadding(new Insets(20, 20, 20, 20));
+        stage.setScene(new Scene(layout, 400, 400));
+        stage.setMinWidth(700);
+        stage.setMaxWidth(700);
+        stage.setMinHeight(800);
+        stage.setMaxHeight(800);
 
-        window.setScene(new Scene(layout, 400, 400));
-        window.setMinWidth(700);
-        window.setMaxWidth(700);
-        window.setMinHeight(800);
-        window.setMaxHeight(800);
-
-        window.show();
+        stage.show();
     }
 
     public static void main(String[] args) {
@@ -135,7 +95,69 @@ public class Main extends Application {
         }
     }
 
-    /** Refreshes the board displayed. */
+    /** Creates a new board to be displayed. */
+    private void createBoard() {
+        // the layout is cleared
+        layout.getChildren().clear();
+
+        // cells are generated
+        for (int x = 0; x < board.getBoardSize().length; x++) {
+            for (int y = 0; y < board.getBoardSize()[x].length; y++) {
+                Cell cell = board.getBoardSize()[x][y] = new Cell(20);
+
+                // top line is ignored due to weird bugs
+                if (x > 0) {
+                    cell.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+                    final int fx = x, fy = y;
+
+                    // mouse click event handler on click of the generated cell
+                    cell.setOnMouseClicked(e -> {
+                        Cell cellClicked = board.getBoardSize()[fx][fy];
+
+                        // if a cell hasn't got a piece...
+                        if (!cellClicked.hasPlayerClaimed()) {
+
+                            // set it one, based on current player turn
+                            cellClicked.setPlayerClaimed(board.getPlayerTurn());
+                            cellClicked.setStyle("-fx-background-image: url('" + board.getPlayerTurn().getImage() + "');");
+
+                            // update the next player and turn number labels
+                            turnPlayer.setText("Next Move: " + (board.getPlayerTurn() == player1 ? "Dr. Mantis Toboggan" : "The Trash Man"));
+                            board.setTurnNumber(board.getTurnNumber() + 1);
+                            turnNumber.setText("Turn Number: " + board.getTurnNumber());
+
+                            // five-in-a-row is determined
+                            if (board.determineFiveInRow(fy, fx)) {
+                                if (AlertWinner.display(board.getPlayerTurn().getPlayerNumber())) {
+                                    board = new Board(new Cell[SIZE + 1][SIZE], player1);
+                                    createBoard();
+                                    //refreshBoard();
+                                } else {
+                                    stage.close();
+                                }
+                            } else {
+                                board.setPlayerTurn(board.getPlayerTurn() == player1 ? player2 : player1);
+                            }
+                        }
+                    });
+
+                    // the cell is added to the board
+                    board.add(cell, y, x);
+                    cell.setPadding(new Insets(cell.getCellLength(), cell.getCellLength(), cell.getCellLength(), cell.getCellLength()));
+                }
+            }
+        }
+
+        // labels and player turn are updated
+        board.setPlayerTurn(board.getTurnNumber() % 2 == 0 ? player2 : player1);
+        turnPlayer.setText("Next Move: " + (board.getPlayerTurn() == player2 ? "Dr. Mantis Toboggan" : "The Trash Man"));
+        turnNumber.setText("Turn Number: " + board.getTurnNumber());
+
+        layout.getChildren().addAll(board, saveButton, loadButton, turnNumber, turnPlayer);
+        layout.setPadding(new Insets(20, 20, 20, 20));
+    }
+
+    /** Refreshes the board being displayed. */
     private void refreshBoard() {
         // layout is cleared
         layout.getChildren().clear();
@@ -173,8 +195,17 @@ public class Main extends Application {
                             turnNumber.setText("Turn Number: " + board.getTurnNumber());
 
                             // five-in-a-row is determined
-                            board.determineFiveInRow(fy, fx);
-                            board.setPlayerTurn(board.getPlayerTurn() == player1 ? player2 : player1);
+                            if (board.determineFiveInRow(fy, fx)) {
+                                if (AlertWinner.display(board.getPlayerTurn().getPlayerNumber())) {
+                                    board = new Board(new Cell[SIZE + 1][SIZE], player1);
+                                    createBoard();
+                                    //refreshBoard();
+                                } else {
+                                    stage.close();
+                                }
+                            } else {
+                                board.setPlayerTurn(board.getPlayerTurn() == player1 ? player2 : player1);
+                            }
                         }
                     });
 

@@ -1,27 +1,34 @@
 package sample;
 
-import javafx.scene.layout.GridPane;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import junit.framework.TestCase;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import static org.junit.Assert.*;
 
-@RunWith(Arquillian.class)
-public class BoardTest {
-    @Deployment
-    public static JavaArchive createDeployment() {
-        return ShrinkWrap.create(JavaArchive.class)
-                .addClass(Board.class)
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+public class BoardTest extends TestCase {
+
+    private Player player1 = new Player(1, Main.class.getResource("img/TrashMan.png").toExternalForm());;
+    private int SIZE = 15;
+    private int turnNumber = 1;
+    private Cell[][] cells = new Cell[SIZE + 1][SIZE];
+    private Board board;
+
+    @Before
+    public void setUp() throws Exception {
+        board = new Board(cells, player1);
+        board.setTurnNumber(turnNumber);
     }
 
-    @Test
-    public void determineFiveInRow() {
-        determineFiveInRow();
+    public void testGetBoardSize() {
+        assertSame(board.getBoardSize(), cells);
+    }
+
+    public void testGetPlayerTurn() {
+        assertSame(board.getPlayerTurn(), player1);
+    }
+
+    public void testGetTurnNumber() {
+        assertSame(board.getTurnNumber(), turnNumber);
     }
 }

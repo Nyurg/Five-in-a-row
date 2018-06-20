@@ -22,7 +22,7 @@ public class Cell extends Pane implements java.io.Serializable {
         return playerClaimed != null;
     }
 
-    public Player getPlayerlaimed() {
+    public Player getPlayerClaimed() {
         return playerClaimed;
     }
 

@@ -1,26 +1,28 @@
 package sample;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import junit.framework.TestCase;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
-@RunWith(Arquillian.class)
-public class CellTest {
-    @Deployment
-    public static JavaArchive createDeployment() {
-        return ShrinkWrap.create(JavaArchive.class)
-                .addClass(Cell.class)
-                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+public class CellTest extends TestCase {
+
+    private int length = 20;
+    private Cell cell = new Cell(length);
+    private Player player = new Player();
+
+    @Before
+    public void setUp() throws Exception {
+        cell.setPlayerClaimed(player);
     }
 
-    @Test
-    public void hasPlayerClaimed() {
-        hasPlayerClaimed();
+    public void testGetCellLength() {
+        assertSame(cell.getCellLength(), length);
+    }
+
+    public void testGetPlayerClaimed() {
+        assertSame(cell.getPlayerClaimed(), player);
     }
 }

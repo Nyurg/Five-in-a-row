@@ -1,23 +1,20 @@
 package sample;
+import com.sun.net.httpserver.Authenticator;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
 public class TestRunner {
 
-    private static void testClass (Class classToTest) {
-        Result result = JUnitCore.runClasses(classToTest);
+    public static void main(String[] args) {
+
+        Result result = JUnitCore.runClasses(JunitTestSuite.class);
 
         for (Failure failure : result.getFailures()) {
             System.out.println(failure.toString());
         }
 
-        System.out.println(classToTest.toString() + " Succeeded: " + result.wasSuccessful());
-    }
+        System.out.println("Class Tests Succeeded: " + result.wasSuccessful());
 
-    public static void main(String[] args) {
-        testClass(AlertWinnerTest.class);
-        testClass(BoardTest.class);
-        testClass(CellTest.class);
     }
 }

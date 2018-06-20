@@ -174,8 +174,8 @@ public class Main extends Application {
 
                     // if a cell has been claimed, then display its claim
                     if (cell.hasPlayerClaimed()) {
-                        cell.setPlayerClaimed(cell.getPlayerlaimed());
-                        cell.setStyle("-fx-background-image: url('" + cell.getPlayerlaimed().getImage() + "');");
+                        cell.setPlayerClaimed(cell.getPlayerClaimed());
+                        cell.setStyle("-fx-background-image: url('" + cell.getPlayerClaimed().getImage() + "');");
                     }
 
                     // mouse click event handler on click of the regenerated cell

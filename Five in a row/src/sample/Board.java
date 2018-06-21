@@ -67,6 +67,7 @@ public class Board extends GridPane implements java.io.Serializable {
         for (int a = 0; a < 5; a++) {
             if (xPos + a < boardSize[yPos].length && boardSize[yPos][xPos + a].hasPlayerClaimed() && playerTurn == boardSize[yPos][xPos + a].getPlayerClaimed()) {
                 count++;
+
             } else {
                 a = 5;
                 for (int b = 1; b < 5; b++) {

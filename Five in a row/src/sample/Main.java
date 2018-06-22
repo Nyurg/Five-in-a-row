@@ -25,6 +25,7 @@ public class Main extends Application {
     private Button saveButton = new Button();
     private Button loadButton = new Button();
 
+    /** The method that calls when the application is being launched. */
     @Override
     public void start(Stage window) throws Exception {
         stage = window;
@@ -68,12 +69,16 @@ public class Main extends Application {
         stage.show();
     }
 
+    /** The main method of the application */
     public static void main(String[] args) {
         launch(args);
     }
 
 
-    /** Saves the current progress to a data file. */
+    /**
+     * Saves the current progress of the board into a binary file.
+     * @param board1 The board to be saved.
+     */
     private void saveProgress(Board board1) {
         try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
             output.writeObject(board1);
@@ -83,7 +88,10 @@ public class Main extends Application {
         }
     }
 
-    /** Loads the progress saved from the data file. */
+    /**
+     * Loads the board's current progress saved in the binary file.
+     * @param board1 The board to be passed back if something goes wrong.
+     */
     private Board loadProgress(Board board1) {
         try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(FILE_PATH))) {
             Board retrievedBoard = (Board) input.readObject();
@@ -103,23 +111,22 @@ public class Main extends Application {
         // cells are generated
         for (int x = 0; x < board.getBoardSize().length; x++) {
             for (int y = 0; y < board.getBoardSize()[x].length; y++) {
-                Cell cell = board.getBoardSize()[x][y] = new Cell(20);
+                final int fx = x, fy = y;
+                Cell cell = board.getBoardSize()[fx][fy] = new Cell(20);
 
                 // top line is ignored due to weird bugs
                 if (x > 0) {
                     cell.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-                    final int fx = x, fy = y;
 
                     // mouse click event handler on click of the generated cell
                     cell.setOnMouseClicked(e -> {
-                        Cell cellClicked = board.getBoardSize()[fx][fy];
 
                         // if a cell hasn't got a piece...
-                        if (!cellClicked.hasPlayerClaimed()) {
+                        if (!cell.hasPlayerClaimed()) {
 
                             // set it one, based on current player turn
-                            cellClicked.setPlayerClaimed(board.getPlayerTurn());
-                            cellClicked.setStyle("-fx-background-image: url('" + board.getPlayerTurn().getImage() + "');");
+                            cell.setPlayerClaimed(board.getPlayerTurn());
+                            cell.setStyle("-fx-background-image: url('" + board.getPlayerTurn().getImage() + "');");
 
                             // update the next player and turn number labels
                             turnPlayer.setText("Next Move: " + (board.getPlayerTurn() == player1 ? "Dr. Mantis Toboggan" : "The Trash Man"));
@@ -165,29 +172,30 @@ public class Main extends Application {
         // cells are regenerated
         for (int x = 0; x < board.getBoardSize().length; x++) {
             for (int y = 0; y < board.getBoardSize()[x].length; y++) {
-                Cell cell = board.getBoardSize()[x][y];
+                final int fx = x, fy = y;
+                Cell cell = board.getBoardSize()[fx][fy];
 
                 // first row is ignored
                 if (x > 0) {
                     cell.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-                    final int fx = x, fy = y;
+
 
                     // if a cell has been claimed, then display its claim
                     if (cell.hasPlayerClaimed()) {
-                        cell.setPlayerClaimed(cell.getPlayerClaimed());
+                        //cell.setPlayerClaimed(cell.getPlayerClaimed());
+                        cell.setPlayerClaimed(cell.getPlayerClaimed().getPlayerNumber() == player1.getPlayerNumber() ? player1 : player2);
                         cell.setStyle("-fx-background-image: url('" + cell.getPlayerClaimed().getImage() + "');");
                     }
 
                     // mouse click event handler on click of the regenerated cell
                     cell.setOnMouseClicked(i -> {
-                        Cell cellClicked = board.getBoardSize()[fx][fy];
 
                         // if a cell hasn't got a piece...
-                        if (!cellClicked.hasPlayerClaimed()) {
+                        if (!cell.hasPlayerClaimed()) {
 
                             // set it one, based on current player turn
-                            cellClicked.setPlayerClaimed(board.getPlayerTurn());
-                            cellClicked.setStyle("-fx-background-image: url('" + board.getPlayerTurn().getImage() + "');");
+                            cell.setPlayerClaimed(board.getPlayerTurn());
+                            cell.setStyle("-fx-background-image: url('" + board.getPlayerTurn().getImage() + "');");
 
                             // update the next player and turn number labels
                             turnPlayer.setText("Next Move: " + (board.getPlayerTurn() == player1 ? "Dr. Mantis Toboggan" : "The Trash Man"));
